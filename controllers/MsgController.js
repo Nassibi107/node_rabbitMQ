@@ -1,6 +1,7 @@
-const ExchangeType = ["direct" ,"fanout","topic"]
+const ExchangeType =["direct","topic","fanout","headers"] 
+const keys =  ["Key0618"]
 const Msg = require("../Modules/MsgModule");
-
+const amqp=require("amqplib");
 const addMsg = async (req,rep)=>{
     try{
        data = req.body ;
@@ -72,29 +73,51 @@ const DeleteMsg = async (req,rep)=>{
 } 
    
 
+const connectRabbitMq = async() =>{
+    const queueName = "tesqu"
+    const exName = "my_exchange"
+    const connection=await amqp.connect("amqp://localhost");
+    const channel= await connection.createChannel();
+    await channel.assertQueue(queueName);
+    await channel.assertExchange(exName,ExchangeType[0]);
+    await channel.bindQueue(queueName,exName,keys[0])
+    return channel
+}
 
-async function send() {
-  const connection = await amqp.connect('amqp://localhost');
-  const channel = await connection.createChannel();
-  await channel.assertQueue("tesqu");
-  await channel.assertExchange("my_exchange",ExchangeType[0])
-  await channel.bindQueue("tesqu","my_exchange","Key0618")
-  await channel.sendToQueue("tesqu",Buffer.from('hello world worldfs01'));
-  console.log("hello rabbit ♥")
-  await channel.close() ;
-  await connection.close() ;
-  
+const connextPromise = connectRabbitMq(); 
+const SendOne = async (req,res)=>{
+    try {
+        const {message} = req.body
+        console.log(message)
+        const channel = await connextPromise
+        channel.publish("my_exchange", keys[0], Buffer.from(JSON.stringify(message)));
+        res.status(200).json({"Message":"Sent Message succes"});
+    } catch (error) {
+        res.status(500).json({error:"internal server error"})
+        console.log(error)
+    }
 }
-async function reciver() {
-  const connection = await amqp.connect('amqp://localhost');
-  const channel = await connection.createChannel();
-  await channel.assertQueue("tesqu");
-  console.log(" waitting for msg")
-  channel.consume("tesqu" , msg =>{
-    console.log(`reciver ${msg.content.toString()}`)
-  },{noAck :true}) ;
-  
-}
+
+
+const consume = async(req,res)=>{
+    try {
+        const queueName = "tesqu"
+        const channel = await connextPromise
+        await channel.assertQueue(queueName);
+        await channel.bindQueue(queueName, "my_exchange", keys[0]);
+
+        // consume messages from queue
+        channel.consume(queueName, (message) => {res.json({message:`Received message: ${message.content.toString()}`})
+        channel.ack(message);
+        
+    })
+
+    // acknowledge receipt of message
+    } catch (error) {
+        res.status(500).json({error:"internal server error"})
+    }
+
+   }
 
 module.exports= {
    getAllMsg,
@@ -102,5 +125,9 @@ module.exports= {
    addMsg,
    yourMsg,
    DeleteMsg,
-   MsgBtw
+   MsgBtw,
+   SendOne,
+   consume
+
+
 }

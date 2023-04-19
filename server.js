@@ -5,7 +5,7 @@ const amqp = require('amqplib');
 
 require("dotenv/config");
 app.use(express.json());
-con_W_db.connect;
+// con_W_db.connect;
 const Port =  process.env.Basic_port_serv  || process.env.saving_port_serv
 app.get ("/" , (req,rep) => {
   rep.send("hello world ♥")

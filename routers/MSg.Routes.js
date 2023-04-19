@@ -6,12 +6,13 @@ const route= express.Router() ;
 route.get("/",(req,rep) =>{
    rep.send("hello In •myStoreOFb♥♥ks•")
 })
-route.post("/send",auth.verifyToken,Msg.addMsg) ;
+route.post("/sends",auth.verifyToken,Msg.addMsg) ;
 route.get("/all",auth.verifyToken,verifyRole.verifyRole,Msg.getAllMsg) ;
 route.get("/one/:id",auth.verifyToken,Msg.getOneMsg) ;
 // route.route("/all",auth).get(Msg.getAll) ;
 route.get("/show/:reciver",auth.verifyToken,Msg.yourMsg) ;
 route.get("/btw/:reciver/:publisher",Msg.MsgBtw) ;
 route.delete("/del/:id",auth.verifyToken,Msg.DeleteMsg) ;
+route.post("/send",Msg.SendOne) ;
 
 module.exports =route;
