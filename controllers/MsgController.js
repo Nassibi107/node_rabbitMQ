@@ -39,10 +39,16 @@ const MsgBtw =async (req,rep)=>{
     try{
       Reciver = req.params.reciver ;
       Publisher = req.params.publisher ;
-      // console.log(`Reciver : ${Reciver} .. Publisher : ${Publisher} `)
-       Msgs= await Msg.find({ $or : [{reciver:Reciver,publisher:Publisher} , {reciver:Publisher,publisher:Reciver} ] })
-       console.log(Msgs) 
-        rep.send(Msgs)
+     const Msgs= await Msg.find({ $or :[{reciver:Reciver,publisher:Publisher} , {reciver:Publisher,publisher:Reciver} ] })
+    //   let tolMsg= Msgs.length  ;
+    //   console.log(tolMsg)
+    //   let arrt = [] ;
+    //   for (let i=0 ;i <tolMsg;i++) {
+    //       Msgs[i].seen=1;
+    //       arrt.push( Msgs[i])
+    //     } 
+    //     console.log(arrt)
+    //     rep.send(arrt)
     }catch(error){ 
       rep.send(error)
    }

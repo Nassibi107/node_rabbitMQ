@@ -1,13 +1,13 @@
 const mongoose = require("mongoose") ;
-const Msg = mongoose.model("Msgs",{
+const Msg = mongoose.model("msgs",{
      publisher : {
           type : String ,
-          trim : true ,
+          trim : false ,
           uppercase : true
      },
      reciver : {
           type : String ,
-          trim : true ,
+          trim : false ,
           uppercase : true
      },
      type : String ,
