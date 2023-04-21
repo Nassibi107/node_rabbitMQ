@@ -35,20 +35,13 @@ const yourMsg =async (req,rep)=>{
    }
 
 }
-const MsgBtw =async (req,rep)=>{
+const ReciverMsg =async (req,rep)=>{
     try{
       Reciver = req.params.reciver ;
       Publisher = req.params.publisher ;
-     const Msgs= await Msg.find({ $or :[{reciver:Reciver,publisher:Publisher} , {reciver:Publisher,publisher:Reciver} ] })
-    //   let tolMsg= Msgs.length  ;
-    //   console.log(tolMsg)
-    //   let arrt = [] ;
-    //   for (let i=0 ;i <tolMsg;i++) {
-    //       Msgs[i].seen=1;
-    //       arrt.push( Msgs[i])
-    //     } 
-    //     console.log(arrt)
-    //     rep.send(arrt)
+      upmsg = await Msg.updateMany({ $or :[{reciver:Reciver,publisher:Publisher} , {reciver:Publisher,publisher:Reciver} ] },{$set:{seen :1}}) ;
+      msga = await Msg.find({ $or :[{reciver:Reciver,publisher:Publisher} , {reciver:Publisher,publisher:Reciver} ] }) ;
+     rep.send(msga)
     }catch(error){ 
       rep.send(error)
    }
@@ -131,7 +124,7 @@ module.exports= {
    addMsg,
    yourMsg,
    DeleteMsg,
-   MsgBtw,
+   ReciverMsg,
    SendOne,
    consume
 

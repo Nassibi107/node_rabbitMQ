@@ -11,7 +11,7 @@ route.get("/all",auth.verifyToken,verifyRole.verifyRole,Msg.getAllMsg) ;
 route.get("/one/:id",auth.verifyToken,Msg.getOneMsg) ;
 // route.route("/all",auth).get(Msg.getAll) ;
 route.get("/show/:reciver",auth.verifyToken,Msg.yourMsg) ;
-route.get("/btw/:reciver/:publisher",auth.verifyToken,Msg.MsgBtw) ;
+route.put("/btw/:reciver/:publisher",auth.verifyToken,Msg.ReciverMsg) ;
 route.delete("/del/:id",auth.verifyToken,Msg.DeleteMsg) ;
 route.post("/send",Msg.SendOne) ;
 
